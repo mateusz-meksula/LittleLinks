@@ -1,0 +1,33 @@
+version: "3.6"
+
+services:
+  database:
+    build:
+      context: ./database
+      dockerfile: Dockerfile
+    container_name: database
+    restart: always
+    volumes:
+      - ./database/dbdata:/var/lib/mysql
+    ports:
+      - 3306:3306
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: backend
+    restart: always
+    volumes:
+      - ./backend/api:/code/api
+    ports:
+      - 8000:8000
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: frontend
+    restart: always
+    volumes:
+      - ./frontend:/code
+    ports:
+      - 3000:3000
