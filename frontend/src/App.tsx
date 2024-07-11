@@ -8,6 +8,7 @@ import MainLayout from "./layouts/MainLayout";
 import HomePage from "./pages/HomePage";
 import CreateLinkPage from "./pages/CreateLinkPage";
 import LogInPage from "./pages/LogInPage";
+import SignUpPage from "./pages/SignUpPage";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -15,6 +16,7 @@ const router = createBrowserRouter(
       <Route index element={<HomePage />} />
       <Route path="/create-link" element={<CreateLinkPage />} />
       <Route path="/log-in" element={<LogInPage />} />
+      <Route path="/sign-up" element={<SignUpPage />} />
     </Route>
   )
 );

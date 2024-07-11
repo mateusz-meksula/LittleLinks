@@ -8,12 +8,9 @@ const Header: FC = () => {
     <header className="header">
       <Logo />
       <nav>
-        <a className="active" href="">
-          Home
-        </a>
+        <Link to="/">Home</Link>
         <Link to="/log-in">Log in</Link>
-        <a href="">Sign up</a>
-        <a href="">About</a>
+        <Link to="/sign-up">Sign up</Link>
       </nav>
     </header>
   );
