@@ -19,6 +19,7 @@ services:
     restart: always
     volumes:
       - ./backend/api:/code/api
+    env_file: "./backend/.env"
     ports:
       - 8000:8000
   frontend:
