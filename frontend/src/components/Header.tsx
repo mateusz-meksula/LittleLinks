@@ -1,4 +1,5 @@
 import { FC } from "react";
+import { Link } from "react-router-dom";
 
 import Logo from "./Logo";
 
@@ -10,7 +11,7 @@ const Header: FC = () => {
         <a className="active" href="">
           Home
         </a>
-        <a href="">Log in</a>
+        <Link to="/log-in">Log in</Link>
         <a href="">Sign up</a>
         <a href="">About</a>
       </nav>
