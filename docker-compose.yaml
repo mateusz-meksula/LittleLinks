@@ -11,6 +11,9 @@ services:
       - ./database/dbdata:/var/lib/mysql
     ports:
       - 3306:3306
+    networks:
+      - littlelinks
+
   backend:
     build:
       context: ./backend
@@ -22,6 +25,11 @@ services:
     env_file: "./backend/.env"
     ports:
       - 8000:8000
+    networks:
+      - littlelinks
+    depends_on:
+      - database
+
   frontend:
     build:
       context: ./frontend
@@ -32,3 +40,9 @@ services:
       - ./frontend:/code
     ports:
       - 3000:3000
+    networks:
+      - littlelinks
+
+networks:
+  littlelinks:
+    name: little-links
