@@ -1,7 +1,22 @@
+from typing import Any
+
 from fastapi import Depends
 from mysql.connector.aio import connect
+from mysql.connector.aio.cursor import MySQLCursorDict
 
 from .config import Config, get_config
+
+
+class Cursor(MySQLCursorDict):
+    async def fetchone(
+        self,
+    ) -> dict[str, Any] | None:
+        return await super().fetchone()
+
+    async def fetchall(
+        self,
+    ) -> list[dict[str, Any] | None]:
+        return await super().fetchall()
 
 
 async def get_cursor(config: Config = Depends(get_config)):

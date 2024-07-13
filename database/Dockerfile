@@ -1,4 +1,4 @@
-FROM mysql:9.0.0
+FROM mysql:8.4
 
 ENV MYSQL_DATABASE=littlelinks
 ENV MYSQL_ROOT_PASSWORD=root
