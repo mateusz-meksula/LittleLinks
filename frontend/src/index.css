@@ -270,3 +270,20 @@ form button {
   display: inline-block;
   text-wrap: nowrap;
 }
+
+/* react-toastify
+============================================= */
+
+.toast-container {
+  top: 8rem;
+}
+
+.toast {
+  font-family: "Poppins";
+  color: var(--primary-color);
+  font-weight: bold;
+  background-color: rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(10px);
+  box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.3);
+  border-radius: var(--border-radius);
+}

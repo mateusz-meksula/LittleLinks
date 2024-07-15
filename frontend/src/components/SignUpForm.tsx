@@ -1,4 +1,6 @@
 import { FC, FormEvent, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const SignUpForm: FC = () => {
   const [username, setUsername] = useState("");
@@ -8,6 +10,8 @@ const SignUpForm: FC = () => {
   const [usernameError, setUsernameError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [repeatPasswordError, setRepeatPasswordError] = useState("");
+
+  const navigate = useNavigate();
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -31,8 +35,14 @@ const SignUpForm: FC = () => {
       setUsername("");
       setPassword("");
       setRepeatPassword("");
+      toast.success("Account created successfully", { className: "toast" });
+      navigate("/log-in");
+    } else if (response.status === 409) {
+      setUsernameError("Username already taken");
     } else {
-      console.log("error"); // TODO
+      toast.error("Something went wrong, try again later", {
+        className: "toast",
+      });
     }
   }
 
@@ -81,7 +91,10 @@ const SignUpForm: FC = () => {
             id="username"
             required
             value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            onChange={(e) => {
+              setUsername(e.target.value);
+              setUsernameError("");
+            }}
           />
           <div className="form-field-error">{usernameError}</div>
         </div>
