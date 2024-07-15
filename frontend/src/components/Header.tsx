@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 import Logo from "./Logo";
 
@@ -8,9 +8,9 @@ const Header: FC = () => {
     <header className="header">
       <Logo />
       <nav>
-        <Link to="/">Home</Link>
-        <Link to="/log-in">Log in</Link>
-        <Link to="/sign-up">Sign up</Link>
+        <NavLink to="/">Home</NavLink>
+        <NavLink to="/log-in">Log in</NavLink>
+        <NavLink to="/sign-up">Sign up</NavLink>
       </nav>
     </header>
   );
