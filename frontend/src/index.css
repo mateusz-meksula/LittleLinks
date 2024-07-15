@@ -30,7 +30,7 @@ body:before {
   height: 100%;
   width: 100%;
   z-index: -1;
-  opacity: 0.5;
+  opacity: 0.35;
 }
 
 h1 {
@@ -168,6 +168,12 @@ form button {
   width: 100%;
   margin-top: 2rem;
   font-size: 1rem;
+}
+
+.form-field-error {
+  color: rgb(187, 0, 0);
+  font-size: 0.9rem;
+  height: 0.5rem;
 }
 
 /* footer
