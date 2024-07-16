@@ -55,6 +55,10 @@ const SignUpForm: FC = () => {
       setUsernameError("Username to short");
       return;
     }
+    if (username.length > 20) {
+      setUsernameError("Username to long");
+      return;
+    }
   }, [username]);
 
   useEffect(() => {
