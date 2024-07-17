@@ -11,6 +11,7 @@ from .config import Config, get_config
 from .database import Cursor, get_cursor
 
 ALGORITHM = "HS256"
+REFRESH_TOKEN_LIFETIME = 3600 * 24 * 30
 
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -119,7 +120,12 @@ async def login_for_access_token(
     access_token = create_token({"sub": username}, key=config.secret_key)
     refresh_token = create_token({"sub": username}, key=config.refresh_secret_key)
 
-    response.set_cookie("refreshToken", refresh_token, httponly=True)
+    response.set_cookie(
+        "refreshToken",
+        refresh_token,
+        httponly=True,
+        max_age=REFRESH_TOKEN_LIFETIME,
+    )
     return AccessToken(value=access_token, type="Bearer")
 
 
@@ -142,3 +148,8 @@ async def refresh_access_token(
 
     access_token = create_token({"sub": username}, key=config.secret_key)
     return AccessToken(value=access_token, type="Bearer")
+
+
+@router.get("/logout", dependencies=[Depends(get_current_user)])
+async def logout(response: Response):
+    response.delete_cookie("refreshToken", httponly=True)
