@@ -1,4 +1,12 @@
-import { createContext, FC, ReactElement, useContext, useState } from "react";
+import {
+  createContext,
+  FC,
+  ReactElement,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+import useLocalStorage from "../hooks/useLocalStorage";
 
 type InitializedAuthContextValue = {
   isUserLoggedIn: true;
@@ -35,9 +43,18 @@ type AuthContextWrapperProps = {
 };
 
 const AuthContextProvider: FC<AuthContextWrapperProps> = ({ children }) => {
-  const [authContext, setAuthContext] = useState<AuthContextValue>({
-    isUserLoggedIn: false,
-  });
+  const [storedAuthContext, storeAuthContext] =
+    useLocalStorage<AuthContextValue>("authContext");
+  const [authContext, setAuthContext] = useState<AuthContextValue>(
+    storedAuthContext || {
+      isUserLoggedIn: false,
+    }
+  );
+
+  useEffect(() => {
+    storeAuthContext(authContext);
+  }, [authContext]);
+
   return (
     <AuthContext.Provider value={{ authContext, setAuthContext }}>
       {children}
