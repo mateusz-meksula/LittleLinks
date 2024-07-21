@@ -269,7 +269,7 @@ form button {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 35rem;
+  gap: 7rem;
 }
 
 .home-buttons button {
