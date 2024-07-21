@@ -1,7 +1,7 @@
 from fastapi import HTTPException, status
 from mysql.connector import IntegrityError
 
-from ..auth import get_password_hash
+from ..auth.utils import get_password_hash
 from ..database import Cursor
 
 
