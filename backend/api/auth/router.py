@@ -49,7 +49,10 @@ async def refresh_access_token(
     user = await get_user_from_refresh_token(refreshToken, cursor, config)
 
     expire_date = datetime.now() + config.access_token_lifetime
-    access_token = create_token({"sub": user.username}, key=config.secret_key)
+    access_token = create_token(
+        {"sub": user.username, "expires": expire_date.isoformat()},
+        key=config.secret_key,
+    )
     return AccessToken(token=access_token, type="Bearer", expires=expire_date)
 
 
