@@ -30,7 +30,6 @@ const LogInForm: FC = () => {
       const data = await response.json();
       setAuthContext({
         isUserLoggedIn: true,
-        username: username,
         accessToken: data.token,
       });
       navigate("/");

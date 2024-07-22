@@ -10,7 +10,6 @@ import useLocalStorage from "../hooks/useLocalStorage";
 
 type InitializedAuthContextValue = {
   isUserLoggedIn: true;
-  username: string;
   accessToken: string;
 };
 
