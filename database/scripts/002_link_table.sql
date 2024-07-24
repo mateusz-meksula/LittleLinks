@@ -10,5 +10,6 @@ CREATE TABLE link (
     modified TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
 
     PRIMARY KEY (id),
-    FOREIGN KEY (user_id) REFERENCES user (id)
+    FOREIGN KEY (user_id) REFERENCES user (id),
+    INDEX idx_endpoint (endpoint)
 );
