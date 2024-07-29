@@ -6,16 +6,18 @@ const useAuthFetch = (): typeof fetch => {
   const { authContext, setAuthContext } = useAuthContext();
   const navigate = useNavigate();
 
-  async function authFetch(
+  if (!authContext.isUserLoggedIn) {
+    return fetch;
+  }
+
+  return async function authFetch(
     input: RequestInfo | URL,
     init?: RequestInit
   ): Promise<Response> {
     const reqInit: RequestInit = init || {};
     reqInit.headers = {
       ...reqInit.headers,
-      ...(authContext.isUserLoggedIn
-        ? { Authorization: `Bearer ${authContext.accessToken}` }
-        : {}),
+      Authorization: `Bearer ${authContext.accessToken}`,
     };
 
     const response = await fetch(input, reqInit);
@@ -44,9 +46,7 @@ const useAuthFetch = (): typeof fetch => {
       }
     }
     return response;
-  }
-
-  return authFetch;
+  };
 };
 
 export default useAuthFetch;
