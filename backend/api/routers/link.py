@@ -14,3 +14,8 @@ async def create_link(
     cursor: Annotated[Cursor, Depends(get_cursor)], link_data: LinkCreate
 ):
     return await service.create_link(cursor, url=link_data.url)
+
+
+@router.get("/{link_id}")
+async def get_link(cursor: Annotated[Cursor, Depends(get_cursor)], link_id: int):
+    return await service.get_link(cursor, link_id)
