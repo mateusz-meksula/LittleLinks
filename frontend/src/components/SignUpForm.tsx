@@ -1,6 +1,6 @@
 import { FC, FormEvent, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import { useNotifier } from "../context/NotifierContext";
 
 const SignUpForm: FC = () => {
   const [username, setUsername] = useState("");
@@ -12,6 +12,7 @@ const SignUpForm: FC = () => {
   const [repeatPasswordError, setRepeatPasswordError] = useState("");
 
   const navigate = useNavigate();
+  const notify = useNotifier();
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -35,14 +36,12 @@ const SignUpForm: FC = () => {
       setUsername("");
       setPassword("");
       setRepeatPassword("");
-      toast.success("Account created successfully", { className: "toast" });
+      notify.success("Account created successfully");
       navigate("/log-in");
     } else if (response.status === 409) {
       setUsernameError("Username already taken");
     } else {
-      toast.error("Something went wrong, try again later", {
-        className: "toast",
-      });
+      notify.error("Something went wrong, try again later");
     }
   }
 
@@ -84,7 +83,7 @@ const SignUpForm: FC = () => {
   }, [password, repeatPassword]);
 
   return (
-    <section className="center-page">
+    <section className="center-page card">
       <form onSubmit={handleSubmit}>
         <p className="form-title">Sign up</p>
         <div className="form-field">
@@ -126,7 +125,9 @@ const SignUpForm: FC = () => {
           />
           <div className="form-field-error">{repeatPasswordError}</div>
         </div>
-        <button type="submit">Sign up</button>
+        <button className="form-button" type="submit">
+          Sign up
+        </button>
       </form>
     </section>
   );

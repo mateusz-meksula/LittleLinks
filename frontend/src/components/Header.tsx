@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import Logo from "./Logo";
 import { useAuthContext } from "../context/AuthContext";

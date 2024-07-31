@@ -84,6 +84,23 @@ a:visited {
   transform: translate(-50%, -50%);
 }
 
+.card {
+  font-size: 1.2rem;
+  padding: 2em 4em;
+  background-color: rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(10px);
+  box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.3);
+  border-radius: var(--border-radius);
+}
+
+.icon-button {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.7rem;
+}
+
 /* header
 =============================================================== */
 
@@ -125,15 +142,6 @@ a:visited {
 /* forms
 ======================================================= */
 
-form {
-  font-size: 1.2rem;
-  padding: 2em 4em;
-  background-color: rgba(255, 255, 255, 0.35);
-  backdrop-filter: blur(10px);
-  box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.3);
-  border-radius: var(--border-radius);
-}
-
 .form-title {
   margin-bottom: 2rem;
   font-weight: bold;
@@ -171,7 +179,7 @@ form {
   border-bottom: 1px solid grey;
 }
 
-form button {
+.form-button {
   width: 100%;
   margin-top: 2rem;
   font-size: 1rem;

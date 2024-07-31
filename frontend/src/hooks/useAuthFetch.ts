@@ -1,10 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "../context/AuthContext";
-import { toast } from "react-toastify";
+import { useNotifier } from "../context/NotifierContext";
 
 const useAuthFetch = (): typeof fetch => {
   const { authContext, setAuthContext } = useAuthContext();
   const navigate = useNavigate();
+  const notify = useNotifier();
 
   if (!authContext.isUserLoggedIn) {
     return fetch;
@@ -39,9 +40,7 @@ const useAuthFetch = (): typeof fetch => {
       } else if (refreshResponse.status === 422) {
         // that case happens when refreshToken is expired
         // that means user should log in again
-        toast.info("Your session has expired, please log in again", {
-          className: "toast",
-        });
+        notify.info("Your session has expired, please log in again");
         navigate("/log-in");
       }
     }

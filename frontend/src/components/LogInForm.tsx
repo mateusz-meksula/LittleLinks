@@ -1,7 +1,7 @@
 import { FC, FormEvent, useState } from "react";
 import { useAuthContext } from "../context/AuthContext";
-import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { useNotifier } from "../context/NotifierContext";
 
 const LogInForm: FC = () => {
   const [username, setUsername] = useState("");
@@ -12,6 +12,7 @@ const LogInForm: FC = () => {
 
   const { setAuthContext } = useAuthContext();
   const navigate = useNavigate();
+  const notify = useNotifier();
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -37,14 +38,12 @@ const LogInForm: FC = () => {
       setUsernameError("Incorrect username or password");
       setPasswordError("Incorrect username or password");
     } else {
-      toast.error("Something went wrong, try again later", {
-        className: "toast",
-      });
+      notify.error("Something went wrong, try again later");
     }
   }
 
   return (
-    <section className="center-page">
+    <section className="center-page card">
       <form onSubmit={handleSubmit}>
         <p className="form-title">Log in</p>
         <div className="form-field">
@@ -77,7 +76,9 @@ const LogInForm: FC = () => {
           />
           <div className="form-field-error">{passwordError}</div>
         </div>
-        <button type="submit">Log in</button>
+        <button className="form-button" type="submit">
+          Log in
+        </button>
       </form>
     </section>
   );
