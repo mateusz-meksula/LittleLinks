@@ -46,6 +46,8 @@ idna==3.7
     #   anyio
     #   email-validator
     #   httpx
+iniconfig==2.0.0
+    # via pytest
 jinja2==3.1.4
     # via fastapi
 markdown-it-py==3.0.0
@@ -58,8 +60,12 @@ mysql-connector-python==9.0.0
     # via -r requirements.in
 orjson==3.10.6
     # via fastapi
+packaging==24.1
+    # via pytest
 passlib[bcrypt]==1.7.4
     # via -r requirements.in
+pluggy==1.5.0
+    # via pytest
 pydantic==2.8.2
     # via fastapi
 pydantic-core==2.20.1
@@ -67,6 +73,8 @@ pydantic-core==2.20.1
 pygments==2.18.0
     # via rich
 pyjwt==2.8.0
+    # via -r requirements.in
+pytest==8.3.2
     # via -r requirements.in
 python-dotenv==1.0.1
     # via uvicorn

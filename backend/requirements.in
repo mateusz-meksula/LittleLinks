@@ -3,3 +3,4 @@ pyjwt
 passlib[bcrypt]
 classy-env
 mysql-connector-python
+pytest
