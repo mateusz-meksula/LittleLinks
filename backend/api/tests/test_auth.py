@@ -3,7 +3,7 @@ import re
 from fastapi.testclient import TestClient
 
 CREDENTIALS = {
-    "username": "test_01",
+    "username": "test_02",
     "password": "securePassword123!",
 }
 
@@ -13,7 +13,7 @@ def test_sign_up(client: TestClient):
     data = response.json()
 
     assert response.status_code == 201
-    assert data == {"id": 1}
+    assert data == {"id": 2}
 
 
 def test_login_then_logout(client: TestClient):
@@ -49,3 +49,45 @@ def test_login_then_logout(client: TestClient):
     assert max_age
     assert int(max_age.group(1)) == 0
     assert "HttpOnly" in refresh_token_header
+
+
+def test_cant_signup_with_used_username(client: TestClient):
+    response = client.post(
+        "/users",
+        json={
+            "username": "test_01",
+            "password": "securePassword123!",
+        },
+    )
+    data = response.json()
+
+    assert response.status_code == 409
+    assert data["detail"] == "Username already taken"
+
+
+def test_cant_login_with_invalid_username(client: TestClient):
+    response = client.post(
+        "/auth/login",
+        data={
+            "username": "test_test",
+            "password": "securePassword123!",
+        },
+    )
+    data = response.json()
+
+    assert response.status_code == 401
+    assert data["detail"] == "Incorrect username or password"
+
+
+def test_cant_login_with_invalid_password(client: TestClient):
+    response = client.post(
+        "/auth/login",
+        data={
+            "username": "test_01",
+            "password": "invalidPassword12",
+        },
+    )
+    data = response.json()
+
+    assert response.status_code == 401
+    assert data["detail"] == "Incorrect username or password"

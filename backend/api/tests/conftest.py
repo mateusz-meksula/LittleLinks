@@ -46,6 +46,17 @@ def populate_database():
     """
     cursor.execute(stmt)
     connection.commit()
+
+    stmt = "INSERT INTO user (username, hash) VALUES (%s, %s)"
+    cursor.execute(
+        stmt,
+        (
+            "test_01",
+            "$2b$12$uHTW0asqFEr/XM9y9Y2vuemkylVa3t2aYchheMPcUZaqxErJ/MxxS",
+        ),
+    )
+    connection.commit()
+
     cursor.close()
 
     yield
