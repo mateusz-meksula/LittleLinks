@@ -52,9 +52,28 @@ def populate_database():
         stmt,
         (
             "test_01",
+            # securePassword123!
             "$2b$12$uHTW0asqFEr/XM9y9Y2vuemkylVa3t2aYchheMPcUZaqxErJ/MxxS",
         ),
     )
+    connection.commit()
+
+    stmt = """
+    CREATE TABLE link (
+        id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
+        user_id SMALLINT UNSIGNED,
+        url varchar(250) NOT NULL,
+        endpoint varchar(5) UNIQUE NOT NULL,
+        visit_count SMALLINT NOT NULL DEFAULT 0,
+        created DATETIME DEFAULT CURRENT_TIMESTAMP,
+        modified TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
+
+        PRIMARY KEY (id),
+        FOREIGN KEY (user_id) REFERENCES user (id),
+        INDEX idx_endpoint (endpoint)
+    );
+    """
+    cursor.execute(stmt)
     connection.commit()
 
     cursor.close()
@@ -62,6 +81,11 @@ def populate_database():
     yield
 
     cursor = connection.cursor()
+
+    stmt = "DROP TABLE link;"
+    cursor.execute(stmt)
+    connection.commit()
+
     stmt = "DROP TABLE user;"
     cursor.execute(stmt)
     connection.commit()
