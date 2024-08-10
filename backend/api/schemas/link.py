@@ -5,6 +5,7 @@ from pydantic import BaseModel
 
 class LinkCreate(BaseModel):
     url: str
+    alias: str | None = None
 
 
 class LinkCreateResponse(BaseModel):
