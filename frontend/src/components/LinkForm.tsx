@@ -1,4 +1,4 @@
-import { FC, FormEvent, useRef } from "react";
+import { FC, FormEvent, useEffect, useRef, useState } from "react";
 import { useAuthContext } from "../context/AuthContext";
 import useApiClient from "../hooks/useApiClient";
 import { useNotifier } from "../context/NotifierContext";
@@ -11,6 +11,8 @@ type LinkFormProps = {
 
 const LinkForm: FC<LinkFormProps> = ({ onSubmit, setLittleLinkId }) => {
   const longUrlInput = useRef<HTMLInputElement>(null);
+  const [alias, setAlias] = useState("");
+  const [aliasError, setAliasError] = useState("");
   const { authContext } = useAuthContext();
   const apiClient = useApiClient();
   const notify = useNotifier();
@@ -22,9 +24,14 @@ const LinkForm: FC<LinkFormProps> = ({ onSubmit, setLittleLinkId }) => {
       return;
     }
 
+    const requestBody: any = { url: longUrl };
+    if (alias) {
+      requestBody.alias = alias;
+    }
+
     const response = await apiClient("/links/", {
       method: "POST",
-      body: JSON.stringify({ url: longUrl }),
+      body: JSON.stringify(requestBody),
     });
 
     if (response.ok) {
@@ -35,6 +42,19 @@ const LinkForm: FC<LinkFormProps> = ({ onSubmit, setLittleLinkId }) => {
       notify.error("Something went wrong, try again later");
     }
   }
+
+  useEffect(() => {
+    if (!alias) {
+      setAliasError("");
+      return;
+    }
+    if (alias.length > 10) {
+      setAliasError("alias too long");
+      return;
+    } else {
+      setAliasError("");
+    }
+  }, [alias]);
 
   return (
     <section className="center-page card">
@@ -55,8 +75,10 @@ const LinkForm: FC<LinkFormProps> = ({ onSubmit, setLittleLinkId }) => {
             type="text"
             name="alias"
             id="alias"
+            value={alias}
+            onChange={(e) => setAlias(e.target.value)}
           />
-          <div className="form-field-error"></div>
+          <div className="form-field-error">{aliasError}</div>
         </div>
         <button className="form-button" type="submit">
           Create little link

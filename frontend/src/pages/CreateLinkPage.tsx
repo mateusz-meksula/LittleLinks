@@ -20,7 +20,7 @@ const CreateLinkPage: FC = () => {
       if (response.ok) {
         const data = await response.json();
         setLongUrl(data.url);
-        setLittleLink(data.endpoint);
+        setLittleLink(data.alias);
       }
     }
 
