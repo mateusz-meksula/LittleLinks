@@ -46,15 +46,15 @@ const LinkForm: FC<LinkFormProps> = ({ onSubmit, setLittleLinkId }) => {
           <div className="form-field-error"></div>
         </div>
         <div className="form-field">
-          <label htmlFor="short">
-            your short (
+          <label htmlFor="alias">
+            alias (
             {authContext.isUserLoggedIn ? "optional" : "for logged in users"})
           </label>
           <input
             disabled={!authContext.isUserLoggedIn}
             type="text"
-            name="short"
-            id="short"
+            name="alias"
+            id="alias"
           />
           <div className="form-field-error"></div>
         </div>

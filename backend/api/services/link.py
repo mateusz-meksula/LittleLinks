@@ -32,10 +32,10 @@ async def create_link(
     if link.alias and not user_id:
         raise LinkAliasInNotAuthenticatedRequestError
 
-    endpoint = link.alias or await generate_unique_endpoint(cursor)
-    stmt = "INSERT INTO link (user_id, url, endpoint) VALUES (%s, %s, %s)"
+    alias = link.alias or await generate_unique_alias(cursor)
+    stmt = "INSERT INTO link (user_id, url, alias) VALUES (%s, %s, %s)"
 
-    await cursor.execute(stmt, (user_id, link.url, endpoint))
+    await cursor.execute(stmt, (user_id, link.url, alias))
 
     link_id = cursor.lastrowid
     assert link_id
@@ -62,20 +62,20 @@ async def get_link(
     return LinkRead(**link_data)
 
 
-async def endpoint_exist(cursor: Cursor, endpoint: str) -> bool:
-    stmt = "SELECT (endpoint) FROM link WHERE endpoint = %s"
-    await cursor.execute(stmt, (endpoint,))
+async def alias_exist(cursor: Cursor, alias: str) -> bool:
+    stmt = "SELECT (alias) FROM link WHERE alias = %s"
+    await cursor.execute(stmt, (alias,))
     result = await cursor.fetchone()
     return result is not None
 
 
-def generate_endpoint() -> str:
+def generate_alias() -> str:
     return "".join(random.choice(string.ascii_letters) for _ in range(5))
 
 
-async def generate_unique_endpoint(cursor: Cursor) -> str:
+async def generate_unique_alias(cursor: Cursor) -> str:
     while True:
-        endpoint = generate_endpoint()
-        if not await endpoint_exist(cursor, endpoint):
+        alias = generate_alias()
+        if not await alias_exist(cursor, alias):
             break
-    return endpoint
+    return alias

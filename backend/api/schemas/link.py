@@ -16,7 +16,7 @@ class LinkRead(BaseModel):
     id: int
     user_id: int | None
     url: str
-    endpoint: str
+    alias: str
     visit_count: int
     created: datetime
     modified: datetime | None

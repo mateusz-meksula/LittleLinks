@@ -61,9 +61,9 @@ def test_get_link(client: TestClient, link_test_data: LinkTestData):
     data = response.json()
 
     assert response.status_code == 200
-    assert "endpoint" in data
+    assert "alias" in data
     assert "created" in data
-    endpoint = data.pop("endpoint")
+    alias = data.pop("alias")
     data.pop("created")
     assert data == {
         "id": link_test_data.id,
@@ -73,7 +73,7 @@ def test_get_link(client: TestClient, link_test_data: LinkTestData):
         "modified": None,
     }
 
-    assert len(endpoint) == 5
+    assert len(alias) == 5
 
 
 @pytest.fixture
@@ -108,7 +108,7 @@ def test_get_user_link(client: TestClient, link_test_data_with_user: LinkTestDat
     data = response.json()
 
     assert response.status_code == 200
-    endpoint = data.pop("endpoint")
+    alias = data.pop("alias")
     data.pop("created")
     assert data == {
         "id": link_test_data_with_user.id,
@@ -118,7 +118,7 @@ def test_get_user_link(client: TestClient, link_test_data_with_user: LinkTestDat
         "modified": None,
     }
 
-    assert len(endpoint) == 5
+    assert len(alias) == 5
 
 
 @pytest.fixture
@@ -164,7 +164,7 @@ def test_get_link_with_alias(
         "id": link_test_data_with_alias.id,
         "user_id": link_test_data_with_alias.user_id,
         "url": link_test_data_with_alias.url,
-        "endpoint": link_test_data_with_alias.alias,
+        "alias": link_test_data_with_alias.alias,
         "visit_count": 0,
         "modified": None,
     }
