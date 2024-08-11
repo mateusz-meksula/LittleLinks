@@ -9,10 +9,7 @@ class UsernameAlreadyTakenError(HTTPException):
     def __init__(self) -> None:
         super().__init__(
             status_code=status.HTTP_409_CONFLICT,
-            detail={
-                "field": "username",
-                "message": "username already taken",
-            },
+            detail="username already taken",
         )
 
 

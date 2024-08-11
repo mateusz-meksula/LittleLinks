@@ -28,10 +28,7 @@ class LinkAliasAlreadyTakenError(HTTPException):
     def __init__(self) -> None:
         super().__init__(
             status_code=409,
-            detail={
-                "field": "alias",
-                "message": "alias already taken",
-            },
+            detail="alias already taken",
         )
 
 
