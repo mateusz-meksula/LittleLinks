@@ -191,6 +191,32 @@ a:visited {
   height: 0.5rem;
 }
 
+.form-error {
+  background-color: rgba(255, 37, 37, 0.6);
+  position: relative;
+  padding: 1em 2em;
+  margin-bottom: 2rem;
+  border-radius: var(--border-radius);
+  box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.3);
+  color: rgb(53, 0, 0);
+}
+
+.form-error button {
+  position: absolute;
+  width: fit-content;
+  right: 1.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: transparent;
+  color: black;
+  font-size: 1.2rem;
+  padding: 0;
+}
+
+.form-error button:hover {
+  box-shadow: none;
+}
+
 /* footer
 ====================================== */
 
