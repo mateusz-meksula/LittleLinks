@@ -2,6 +2,7 @@ import random
 import string
 
 from fastapi import HTTPException
+from mysql.connector import IntegrityError
 
 from ..database import Cursor
 from ..schemas.link import LinkCreate, LinkRead
@@ -23,6 +24,17 @@ class LinkAliasInNotAuthenticatedRequestError(HTTPException):
         )
 
 
+class LinkAliasAlreadyTakenError(HTTPException):
+    def __init__(self) -> None:
+        super().__init__(
+            status_code=409,
+            detail={
+                "field": "alias",
+                "message": "alias already taken",
+            },
+        )
+
+
 async def create_link(
     cursor: Cursor,
     *,
@@ -35,7 +47,10 @@ async def create_link(
     alias = link.alias or await generate_unique_alias(cursor)
     stmt = "INSERT INTO link (user_id, url, alias) VALUES (%s, %s, %s)"
 
-    await cursor.execute(stmt, (user_id, link.url, alias))
+    try:
+        await cursor.execute(stmt, (user_id, link.url, alias))
+    except IntegrityError:
+        raise LinkAliasAlreadyTakenError
 
     link_id = cursor.lastrowid
     assert link_id
