@@ -1,7 +1,9 @@
-import { FC, FormEvent, useEffect, useRef, useState } from "react";
+import { FC, FormEvent, useState } from "react";
 import { useAuthContext } from "../context/AuthContext";
 import useApiClient from "../hooks/useApiClient";
 import { useNotifier } from "../context/NotifierContext";
+import FormField from "./FormField";
+import { formDataToObj, withFormErrorSetter } from "../utils";
 
 type LinkFormProps = {
   onSubmit: () => void;
@@ -10,25 +12,16 @@ type LinkFormProps = {
 };
 
 const LinkForm: FC<LinkFormProps> = ({ onSubmit, setLittleLinkId }) => {
-  const longUrlInput = useRef<HTMLInputElement>(null);
-  const [alias, setAlias] = useState("");
-  const [aliasError, setAliasError] = useState("");
+  const [isError, setIsError] = useState(false);
   const { authContext } = useAuthContext();
   const apiClient = useApiClient();
   const notify = useNotifier();
 
-  async function createLittleLink(e: FormEvent) {
+  async function createLittleLink(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const longUrl = longUrlInput.current?.value;
-    if (!longUrl) {
-      return;
-    }
+    if (isError) return;
 
-    const requestBody: any = { url: longUrl };
-    if (alias) {
-      requestBody.alias = alias;
-    }
-
+    const requestBody = formDataToObj(new FormData(e.currentTarget));
     const response = await apiClient("/links/", {
       method: "POST",
       body: JSON.stringify(requestBody),
@@ -43,43 +36,20 @@ const LinkForm: FC<LinkFormProps> = ({ onSubmit, setLittleLinkId }) => {
     }
   }
 
-  useEffect(() => {
-    if (!alias) {
-      setAliasError("");
-      return;
-    }
-    if (alias.length > 10) {
-      setAliasError("alias too long");
-      return;
-    } else {
-      setAliasError("");
-    }
-  }, [alias]);
+  const aliasLabel = `alias (${
+    authContext.isUserLoggedIn ? "optional" : "for logged in users"
+  })`;
 
   return (
     <section className="center-page card">
       <form onSubmit={createLittleLink}>
         <p className="form-title">Create your little link</p>
-        <div className="form-field">
-          <label htmlFor="url">url</label>
-          <input type="url" name="url" id="url" required ref={longUrlInput} />
-          <div className="form-field-error"></div>
-        </div>
-        <div className="form-field">
-          <label htmlFor="alias">
-            alias (
-            {authContext.isUserLoggedIn ? "optional" : "for logged in users"})
-          </label>
-          <input
-            disabled={!authContext.isUserLoggedIn}
-            type="text"
-            name="alias"
-            id="alias"
-            value={alias}
-            onChange={(e) => setAlias(e.target.value)}
-          />
-          <div className="form-field-error">{aliasError}</div>
-        </div>
+        <FormField type="url" label="url" name="url" required={true} />
+        <FormField
+          label={aliasLabel}
+          name="alias"
+          validator={withFormErrorSetter(aliasValidator, setIsError)}
+        />
         <button className="form-button" type="submit">
           Create little link
         </button>
@@ -89,3 +59,10 @@ const LinkForm: FC<LinkFormProps> = ({ onSubmit, setLittleLinkId }) => {
 };
 
 export default LinkForm;
+
+function aliasValidator(alias: string): string | null {
+  if (alias.length > 10) {
+    return "alias to long";
+  }
+  return null;
+}
