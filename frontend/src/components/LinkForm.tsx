@@ -1,10 +1,15 @@
-import { FC, FormEvent, useState } from "react";
+import { ChangeEvent, FC, FormEvent, useState } from "react";
 import { useAuthContext } from "../context/AuthContext";
 import useApiClient from "../hooks/useApiClient";
 import { useNotifier } from "../context/NotifierContext";
 import FormField from "./FormField";
 import { formDataToObj, withFormErrorSetter } from "../utils";
 import Form from "./Form";
+
+type LinkFormValues = {
+  url: string;
+  alias: string;
+};
 
 type LinkFormProps = {
   onSubmit: () => void;
@@ -15,6 +20,11 @@ type LinkFormProps = {
 const LinkForm: FC<LinkFormProps> = ({ onSubmit, setLittleLinkId }) => {
   const [isError, setIsError] = useState(false);
   const [formErrorText, setFormErrorText] = useState<string | null>(null);
+  const [formValues, setFormValues] = useState<LinkFormValues>({
+    url: "",
+    alias: "",
+  });
+
   const { authContext } = useAuthContext();
   const apiClient = useApiClient();
   const notify = useNotifier();
@@ -44,6 +54,10 @@ const LinkForm: FC<LinkFormProps> = ({ onSubmit, setLittleLinkId }) => {
     authContext.isUserLoggedIn ? "optional" : "for logged in users"
   })`;
 
+  const fieldOnChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setFormValues({ ...formValues, [e.target.name]: e.target.value });
+  };
+
   return (
     <Form
       title="Create your little link"
@@ -51,10 +65,19 @@ const LinkForm: FC<LinkFormProps> = ({ onSubmit, setLittleLinkId }) => {
       buttonText="Create little link"
       errorText={formErrorText}
     >
-      <FormField type="url" label="url" name="url" required={true} />
+      <FormField
+        type="url"
+        label="url"
+        name="url"
+        required={true}
+        formValues={formValues}
+        onChange={fieldOnChange}
+      />
       <FormField
         label={aliasLabel}
         name="alias"
+        formValues={formValues}
+        onChange={fieldOnChange}
         validator={withFormErrorSetter(aliasValidator, setIsError)}
       />
     </Form>

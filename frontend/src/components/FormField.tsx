@@ -1,28 +1,36 @@
-import { FC, HTMLInputTypeAttribute, useEffect, useState } from "react";
+import {
+  useEffect,
+  useState,
+  HTMLInputTypeAttribute,
+  FC,
+  ChangeEvent,
+} from "react";
 
 type FormFieldProps = {
   name: string;
   label: string;
+  formValues: any;
+  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
   type?: HTMLInputTypeAttribute;
   required?: boolean;
   validator?: (value: string) => string | null;
 };
 
 const FormField: FC<FormFieldProps> = (props) => {
-  const [value, setValue] = useState("");
   const [error, setError] = useState("");
 
-  const { name, label, type, required, validator } = props;
+  const { name, label, formValues, onChange, type, required, validator } =
+    props;
 
   useEffect(() => {
     if (!validator) return;
-    const errorMsg = validator(value);
+    const errorMsg = validator(formValues[name]);
     if (errorMsg !== null) {
       setError(errorMsg);
     } else {
       setError("");
     }
-  }, [value]);
+  }, [formValues]);
 
   return (
     <div className="form-field">
@@ -31,8 +39,8 @@ const FormField: FC<FormFieldProps> = (props) => {
         type={type || "text"}
         name={name}
         id={name}
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
+        value={formValues[name]}
+        onChange={onChange}
         required={required}
       />
       <div className="form-field-error">{error}</div>

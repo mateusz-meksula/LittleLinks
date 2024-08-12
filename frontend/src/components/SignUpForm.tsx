@@ -1,30 +1,33 @@
-import { FC, FormEvent, useEffect, useState } from "react";
+import { ChangeEvent, FC, FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useNotifier } from "../context/NotifierContext";
+import Form from "./Form";
+import FormField from "./FormField";
+import { formDataToObj, withFormErrorSetter } from "../utils";
+
+type SignUpFormValues = {
+  username: string;
+  password: string;
+  repeatPassword: string;
+};
 
 const SignUpForm: FC = () => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [repeatPassword, setRepeatPassword] = useState("");
-
-  const [usernameError, setUsernameError] = useState("");
-  const [passwordError, setPasswordError] = useState("");
-  const [repeatPasswordError, setRepeatPasswordError] = useState("");
+  const [formErrorText, setFormErrorText] = useState<string | null>(null);
+  const [isError, setIsError] = useState(false);
+  const [formValues, setFormValues] = useState<SignUpFormValues>({
+    username: "",
+    password: "",
+    repeatPassword: "",
+  });
 
   const navigate = useNavigate();
   const notify = useNotifier();
 
-  async function handleSubmit(e: FormEvent) {
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (isError) return;
 
-    if (!username || !password || !repeatPassword) {
-      return;
-    }
-
-    const requestData = {
-      username,
-      password,
-    };
+    const requestData = formDataToObj(new FormData(e.currentTarget));
 
     const response = await fetch("/api/users/", {
       method: "POST",
@@ -33,103 +36,87 @@ const SignUpForm: FC = () => {
     });
 
     if (response.ok) {
-      setUsername("");
-      setPassword("");
-      setRepeatPassword("");
       notify.success("Account created successfully");
       navigate("/log-in");
     } else if (response.status === 409) {
-      setUsernameError("Username already taken");
+      setFormErrorText("Username already taken");
     } else {
       notify.error("Something went wrong, try again later");
     }
   }
 
-  useEffect(() => {
-    if (!username || username.length >= 5) {
-      setUsernameError("");
-      return;
+  function usernameValidator(username: string) {
+    if (!username) {
+      return null;
     }
     if (username.length < 5) {
-      setUsernameError("Username to short");
-      return;
+      return "Username to short";
     }
     if (username.length > 20) {
-      setUsernameError("Username to long");
-      return;
+      return "Username to long";
     }
-  }, [username]);
+    return null;
+  }
 
-  useEffect(() => {
+  function passwordValidator(password: string) {
     if (!password || isPasswordSecure(password)) {
-      setPasswordError("");
-      return;
+      return null;
     }
     if (!isPasswordSecure(password)) {
-      setPasswordError("Password is not secure");
-      return;
+      return "Password is not secure";
     }
-  }, [password]);
+    return null;
+  }
 
-  useEffect(() => {
+  function repeatPasswordValidator(repeatPassword: string) {
+    const password = formValues.password;
     if ((!password && !repeatPassword) || password === repeatPassword) {
-      setRepeatPasswordError("");
-      return;
+      return null;
     }
     if (password !== repeatPassword) {
-      setRepeatPasswordError("Passwords does not match");
-      return;
+      return "Passwords does not match";
     }
-  }, [password, repeatPassword]);
+    return null;
+  }
+
+  const fieldOnChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setFormValues({ ...formValues, [e.target.name]: e.target.value });
+  };
 
   return (
-    <section className="center-page card">
-      <form onSubmit={handleSubmit}>
-        <p className="form-title">Sign up</p>
-        <div className="form-field">
-          <label htmlFor="username">username</label>
-          <input
-            type="text"
-            name="username"
-            id="username"
-            required
-            value={username}
-            onChange={(e) => {
-              setUsername(e.target.value);
-              setUsernameError("");
-            }}
-          />
-          <div className="form-field-error">{usernameError}</div>
-        </div>
-        <div className="form-field">
-          <label htmlFor="password">password</label>
-          <input
-            type="password"
-            name="password"
-            id="password"
-            required
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <div className="form-field-error">{passwordError}</div>
-        </div>
-        <div className="form-field">
-          <label htmlFor="repeat-password">repeat password</label>
-          <input
-            type="password"
-            name="repeat-password"
-            id="repeat-password"
-            required
-            value={repeatPassword}
-            onChange={(e) => setRepeatPassword(e.target.value)}
-          />
-          <div className="form-field-error">{repeatPasswordError}</div>
-        </div>
-        <button className="form-button" type="submit">
-          Sign up
-        </button>
-      </form>
-    </section>
+    <Form
+      title="Sign up"
+      onSubmit={handleSubmit}
+      buttonText="Sign up"
+      errorText={formErrorText}
+    >
+      <FormField
+        name="username"
+        required
+        label="username"
+        formValues={formValues}
+        onChange={fieldOnChange}
+        validator={withFormErrorSetter(usernameValidator, setIsError)}
+      />
+      <FormField
+        name="password"
+        required
+        label="password"
+        type="password"
+        formValues={formValues}
+        onChange={fieldOnChange}
+        validator={withFormErrorSetter(passwordValidator, setIsError)}
+      />
+      <FormField
+        name="repeatPassword"
+        required
+        label="repeat password"
+        type="password"
+        onChange={fieldOnChange}
+        formValues={formValues}
+        validator={withFormErrorSetter(repeatPasswordValidator, setIsError)}
+      />
+    </Form>
   );
 };
 
