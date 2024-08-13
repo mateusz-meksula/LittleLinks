@@ -2,8 +2,7 @@ import { ChangeEvent, FC, FormEvent, useState } from "react";
 import { useAuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useNotifier } from "../context/NotifierContext";
-import Form from "./Form";
-import FormField from "./FormField";
+import { Form, FormError, FormField } from "./Form";
 
 type LogInFormValues = {
   username: string;
@@ -11,7 +10,9 @@ type LogInFormValues = {
 };
 
 const LogInForm: FC = () => {
-  const [formErrorText, setFormErrorText] = useState<string | null>(null);
+  const [apiResponseErrorText, setApiResponseErrorText] = useState<
+    string | null
+  >(null);
   const [formValues, setFormValues] = useState<LogInFormValues>({
     username: "",
     password: "",
@@ -37,7 +38,7 @@ const LogInForm: FC = () => {
       });
       navigate("/");
     } else if (response.status === 401) {
-      setFormErrorText("Incorrect username or password");
+      setApiResponseErrorText("Incorrect username or password");
     } else {
       notify.error("Something went wrong, try again later");
     }
@@ -47,13 +48,15 @@ const LogInForm: FC = () => {
     setFormValues({ ...formValues, [e.target.name]: e.target.value });
   };
 
+  const onFormErrorClose = () => {
+    setApiResponseErrorText("");
+  };
+
   return (
-    <Form
-      title="Log in"
-      onSubmit={handleSubmit}
-      buttonText="Log in"
-      errorText={formErrorText}
-    >
+    <Form title="Log in" onSubmit={handleSubmit} buttonText="Log in">
+      {apiResponseErrorText && (
+        <FormError onClose={onFormErrorClose}>{apiResponseErrorText}</FormError>
+      )}
       <FormField
         name="username"
         required

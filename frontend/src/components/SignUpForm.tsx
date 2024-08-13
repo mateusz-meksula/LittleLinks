@@ -1,9 +1,8 @@
 import { ChangeEvent, FC, FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useNotifier } from "../context/NotifierContext";
-import Form from "./Form";
-import FormField from "./FormField";
 import { formDataToObj, withFormErrorSetter } from "../utils";
+import { Form, FormError, FormField } from "./Form";
 
 type SignUpFormValues = {
   username: string;
@@ -12,8 +11,10 @@ type SignUpFormValues = {
 };
 
 const SignUpForm: FC = () => {
-  const [formErrorText, setFormErrorText] = useState<string | null>(null);
-  const [isError, setIsError] = useState(false);
+  const [isValidationError, setIsValidationError] = useState(false);
+  const [apiResponseErrorText, setApiResponseErrorText] = useState<
+    string | null
+  >(null);
   const [formValues, setFormValues] = useState<SignUpFormValues>({
     username: "",
     password: "",
@@ -25,7 +26,7 @@ const SignUpForm: FC = () => {
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (isError) return;
+    if (isValidationError) return;
 
     const requestData = formDataToObj(new FormData(e.currentTarget));
 
@@ -39,7 +40,7 @@ const SignUpForm: FC = () => {
       notify.success("Account created successfully");
       navigate("/log-in");
     } else if (response.status === 409) {
-      setFormErrorText("Username already taken");
+      setApiResponseErrorText("Username already taken");
     } else {
       notify.error("Something went wrong, try again later");
     }
@@ -83,20 +84,22 @@ const SignUpForm: FC = () => {
     setFormValues({ ...formValues, [e.target.name]: e.target.value });
   };
 
+  const onFormErrorClose = () => {
+    setApiResponseErrorText("");
+  };
+
   return (
-    <Form
-      title="Sign up"
-      onSubmit={handleSubmit}
-      buttonText="Sign up"
-      errorText={formErrorText}
-    >
+    <Form title="Sign up" onSubmit={handleSubmit} buttonText="Sign up">
+      {apiResponseErrorText && (
+        <FormError onClose={onFormErrorClose}>{apiResponseErrorText}</FormError>
+      )}
       <FormField
         name="username"
         required
         label="username"
         formValues={formValues}
         onChange={fieldOnChange}
-        validator={withFormErrorSetter(usernameValidator, setIsError)}
+        validator={withFormErrorSetter(usernameValidator, setIsValidationError)}
       />
       <FormField
         name="password"
@@ -105,7 +108,7 @@ const SignUpForm: FC = () => {
         type="password"
         formValues={formValues}
         onChange={fieldOnChange}
-        validator={withFormErrorSetter(passwordValidator, setIsError)}
+        validator={withFormErrorSetter(passwordValidator, setIsValidationError)}
       />
       <FormField
         name="repeatPassword"
@@ -114,7 +117,10 @@ const SignUpForm: FC = () => {
         type="password"
         onChange={fieldOnChange}
         formValues={formValues}
-        validator={withFormErrorSetter(repeatPasswordValidator, setIsError)}
+        validator={withFormErrorSetter(
+          repeatPasswordValidator,
+          setIsValidationError
+        )}
       />
     </Form>
   );

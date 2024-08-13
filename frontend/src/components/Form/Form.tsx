@@ -1,26 +1,21 @@
-import { FC, FormEvent, ReactElement } from "react";
-import FormError from "./FormError";
+import { FC, FormEvent, PropsWithChildren } from "react";
 
 type FormProps = {
   title: string;
   onSubmit: (e: FormEvent<HTMLFormElement>) => void;
-  errorText: string | null;
-  children: ReactElement[];
   buttonText: string;
 };
 
-const Form: FC<FormProps> = ({
+export const Form: FC<PropsWithChildren<FormProps>> = ({
   title,
   onSubmit,
   children,
   buttonText,
-  errorText,
 }) => {
   return (
     <section className="center-page card">
       <form onSubmit={onSubmit}>
         <p className="form-title">{title}</p>
-        {errorText && <FormError text={errorText} />}
         {children}
         <button className="form-button" type="submit">
           {buttonText}
@@ -29,5 +24,3 @@ const Form: FC<FormProps> = ({
     </section>
   );
 };
-
-export default Form;

@@ -2,9 +2,8 @@ import { ChangeEvent, FC, FormEvent, useState } from "react";
 import { useAuthContext } from "../context/AuthContext";
 import useApiClient from "../hooks/useApiClient";
 import { useNotifier } from "../context/NotifierContext";
-import FormField from "./FormField";
 import { formDataToObj, withFormErrorSetter } from "../utils";
-import Form from "./Form";
+import { Form, FormError, FormField } from "./Form";
 
 type LinkFormValues = {
   url: string;
@@ -18,8 +17,10 @@ type LinkFormProps = {
 };
 
 const LinkForm: FC<LinkFormProps> = ({ onSubmit, setLittleLinkId }) => {
-  const [isError, setIsError] = useState(false);
-  const [formErrorText, setFormErrorText] = useState<string | null>(null);
+  const [isValidationError, setIsValidationError] = useState(false);
+  const [apiResponseErrorText, setApiResponseErrorText] = useState<
+    string | null
+  >(null);
   const [formValues, setFormValues] = useState<LinkFormValues>({
     url: "",
     alias: "",
@@ -31,7 +32,7 @@ const LinkForm: FC<LinkFormProps> = ({ onSubmit, setLittleLinkId }) => {
 
   async function createLittleLink(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (isError) return;
+    if (isValidationError) return;
 
     const requestBody = formDataToObj(new FormData(e.currentTarget));
     const response = await apiClient("/links/", {
@@ -44,7 +45,7 @@ const LinkForm: FC<LinkFormProps> = ({ onSubmit, setLittleLinkId }) => {
       setLittleLinkId(data.id);
       onSubmit();
     } else if (response.status === 409) {
-      setFormErrorText(data.detail);
+      setApiResponseErrorText(data.detail);
     } else {
       notify.error("Something went wrong, try again later");
     }
@@ -58,13 +59,19 @@ const LinkForm: FC<LinkFormProps> = ({ onSubmit, setLittleLinkId }) => {
     setFormValues({ ...formValues, [e.target.name]: e.target.value });
   };
 
+  const onFormErrorClose = () => {
+    setApiResponseErrorText("");
+  };
+
   return (
     <Form
       title="Create your little link"
       onSubmit={createLittleLink}
       buttonText="Create little link"
-      errorText={formErrorText}
     >
+      {isValidationError && (
+        <FormError onClose={onFormErrorClose}>{apiResponseErrorText}</FormError>
+      )}
       <FormField
         type="url"
         label="url"
@@ -78,7 +85,7 @@ const LinkForm: FC<LinkFormProps> = ({ onSubmit, setLittleLinkId }) => {
         name="alias"
         formValues={formValues}
         onChange={fieldOnChange}
-        validator={withFormErrorSetter(aliasValidator, setIsError)}
+        validator={withFormErrorSetter(aliasValidator, setIsValidationError)}
       />
     </Form>
   );

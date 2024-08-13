@@ -16,7 +16,7 @@ type FormFieldProps = {
   validator?: (value: string) => string | null;
 };
 
-const FormField: FC<FormFieldProps> = (props) => {
+export const FormField: FC<FormFieldProps> = (props) => {
   const [error, setError] = useState("");
 
   const { name, label, formValues, onChange, type, required, validator } =
@@ -47,5 +47,3 @@ const FormField: FC<FormFieldProps> = (props) => {
     </div>
   );
 };
-
-export default FormField;
