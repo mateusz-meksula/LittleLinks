@@ -1,11 +1,6 @@
 import { createContext, FC, ReactElement, useContext } from "react";
 import { toast } from "react-toastify";
-
-type NotifierType = {
-  success: (message: string) => void;
-  error: (message: string) => void;
-  info: (message: string) => void;
-};
+import { NotifierType } from "../lib/types";
 
 const NotifierContext = createContext<NotifierType | null>(null);
 

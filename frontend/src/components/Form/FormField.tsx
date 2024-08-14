@@ -2,21 +2,23 @@ import {
   useEffect,
   useState,
   HTMLInputTypeAttribute,
-  FC,
   ChangeEvent,
 } from "react";
+import { formFieldValidator, FormValuesBase } from "../../lib/types";
 
-type FormFieldProps = {
+type FormFieldProps<T extends FormValuesBase> = {
   name: string;
   label: string;
-  formValues: any;
+  formValues: T;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
   type?: HTMLInputTypeAttribute;
   required?: boolean;
-  validator?: (value: string) => string | null;
+  validator?: formFieldValidator<T>;
 };
 
-export const FormField: FC<FormFieldProps> = (props) => {
+export const FormField = <T extends FormValuesBase>(
+  props: FormFieldProps<T>
+) => {
   const [error, setError] = useState("");
 
   const { name, label, formValues, onChange, type, required, validator } =
@@ -24,7 +26,7 @@ export const FormField: FC<FormFieldProps> = (props) => {
 
   useEffect(() => {
     if (!validator) return;
-    const errorMsg = validator(formValues[name]);
+    const errorMsg = validator(formValues[name], formValues);
     if (errorMsg !== null) {
       setError(errorMsg);
     } else {

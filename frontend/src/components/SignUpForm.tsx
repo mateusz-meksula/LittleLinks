@@ -1,14 +1,14 @@
 import { ChangeEvent, FC, FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useNotifier } from "../context/NotifierContext";
-import { formDataToObj, withFormErrorSetter } from "../utils";
+import { formDataToObj, withFormErrorSetter } from "../lib/utils";
 import { Form, FormError, FormField } from "./Form";
-
-type SignUpFormValues = {
-  username: string;
-  password: string;
-  repeatPassword: string;
-};
+import {
+  passwordValidator,
+  repeatPasswordValidator,
+  usernameValidator,
+} from "../lib/field-validators";
+import { SignUpFormValues } from "../lib/types";
 
 const SignUpForm: FC = () => {
   const [isValidationError, setIsValidationError] = useState(false);
@@ -44,40 +44,6 @@ const SignUpForm: FC = () => {
     } else {
       notify.error("Something went wrong, try again later");
     }
-  }
-
-  function usernameValidator(username: string) {
-    if (!username) {
-      return null;
-    }
-    if (username.length < 5) {
-      return "Username to short";
-    }
-    if (username.length > 20) {
-      return "Username to long";
-    }
-    return null;
-  }
-
-  function passwordValidator(password: string) {
-    if (!password || isPasswordSecure(password)) {
-      return null;
-    }
-    if (!isPasswordSecure(password)) {
-      return "Password is not secure";
-    }
-    return null;
-  }
-
-  function repeatPasswordValidator(repeatPassword: string) {
-    const password = formValues.password;
-    if ((!password && !repeatPassword) || password === repeatPassword) {
-      return null;
-    }
-    if (password !== repeatPassword) {
-      return "Passwords does not match";
-    }
-    return null;
   }
 
   const fieldOnChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -127,8 +93,3 @@ const SignUpForm: FC = () => {
 };
 
 export default SignUpForm;
-
-function isPasswordSecure(password: string): boolean {
-  // TODO
-  return password.length > 5;
-}

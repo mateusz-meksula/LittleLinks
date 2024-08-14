@@ -6,7 +6,9 @@ function getFromLocalStorage<T>(key: string): T | null {
   return JSON.parse(saved);
 }
 
-const useLocalStorage = <T>(key: string): [T | null, (v: T | null) => void] => {
+export const useLocalStorage = <T>(
+  key: string
+): [T | null, (v: T | null) => void] => {
   const [value, setValue] = useState<T | null>(getFromLocalStorage(key));
 
   function storeValue(v: T | null): void {
@@ -16,5 +18,3 @@ const useLocalStorage = <T>(key: string): [T | null, (v: T | null) => void] => {
 
   return [value, storeValue];
 };
-
-export default useLocalStorage;

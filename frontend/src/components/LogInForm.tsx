@@ -3,11 +3,7 @@ import { useAuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useNotifier } from "../context/NotifierContext";
 import { Form, FormError, FormField } from "./Form";
-
-type LogInFormValues = {
-  username: string;
-  password: string;
-};
+import { LogInFormValues } from "../lib/types";
 
 const LogInForm: FC = () => {
   const [apiResponseErrorText, setApiResponseErrorText] = useState<

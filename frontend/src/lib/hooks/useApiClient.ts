@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
-import { useAuthContext } from "../context/AuthContext";
-import { useNotifier } from "../context/NotifierContext";
+import { useAuthContext } from "../../context/AuthContext";
+import { useNotifier } from "../../context/NotifierContext";
 
 const API_BASE_URL = "/api";
 
@@ -17,7 +17,7 @@ const apiClient = async (endpoint: string, options: RequestInit = {}) => {
   return fetch(`${API_BASE_URL}${endpoint}`, config);
 };
 
-const useApiClient = (): typeof apiClient => {
+export const useApiClient = (): typeof apiClient => {
   const { authContext, setAuthContext } = useAuthContext();
   const navigate = useNavigate();
   const notify = useNotifier();
@@ -62,5 +62,3 @@ const useApiClient = (): typeof apiClient => {
     return response;
   };
 };
-
-export default useApiClient;

@@ -6,25 +6,8 @@ import {
   useEffect,
   useState,
 } from "react";
-import useLocalStorage from "../hooks/useLocalStorage";
-
-type InitializedAuthContextValue = {
-  isUserLoggedIn: true;
-  accessToken: string;
-};
-
-type NotInitializedAuthContextValue = {
-  isUserLoggedIn: false;
-};
-
-type AuthContextValue =
-  | InitializedAuthContextValue
-  | NotInitializedAuthContextValue;
-
-type AuthContextType = {
-  authContext: AuthContextValue;
-  setAuthContext: (authContext: AuthContextValue) => void;
-};
+import { useLocalStorage } from "../lib/hooks/useLocalStorage";
+import { AuthContextType, AuthContextValue } from "../lib/types";
 
 const AuthContext = createContext<AuthContextType | null>(null);
 

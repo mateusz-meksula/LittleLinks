@@ -1,14 +1,11 @@
 import { ChangeEvent, FC, FormEvent, useState } from "react";
 import { useAuthContext } from "../context/AuthContext";
-import useApiClient from "../hooks/useApiClient";
 import { useNotifier } from "../context/NotifierContext";
-import { formDataToObj, withFormErrorSetter } from "../utils";
+import { formDataToObj, withFormErrorSetter } from "../lib/utils";
 import { Form, FormError, FormField } from "./Form";
-
-type LinkFormValues = {
-  url: string;
-  alias: string;
-};
+import { useApiClient } from "../lib/hooks/useApiClient";
+import { LinkFormValues } from "../lib/types";
+import { aliasValidator } from "../lib/field-validators";
 
 type LinkFormProps = {
   onSubmit: () => void;
@@ -92,10 +89,3 @@ const LinkForm: FC<LinkFormProps> = ({ onSubmit, setLittleLinkId }) => {
 };
 
 export default LinkForm;
-
-function aliasValidator(alias: string): string | null {
-  if (alias.length > 10) {
-    return "alias to long";
-  }
-  return null;
-}

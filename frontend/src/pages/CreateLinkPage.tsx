@@ -1,7 +1,7 @@
 import { FC, useEffect, useState } from "react";
 import LinkForm from "../components/LinkForm";
 import LinkCreated from "../components/LinkCreated";
-import useApiClient from "../hooks/useApiClient";
+import { useApiClient } from "../lib/hooks/useApiClient";
 
 const CreateLinkPage: FC = () => {
   const [formVisible, setFormVisible] = useState(true);
