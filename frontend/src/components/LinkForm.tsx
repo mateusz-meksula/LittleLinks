@@ -1,11 +1,11 @@
-import { ChangeEvent, FC, FormEvent, useState } from "react";
+import { FC, FormEvent, useState } from "react";
 import { useAuthContext } from "../context/AuthContext";
 import { useNotifier } from "../context/NotifierContext";
-import { formDataToObj, withFormErrorSetter } from "../lib/utils";
+import { formDataToObj } from "../lib/utils";
 import { Form, FormError, FormField } from "./Form";
 import { useApiClient } from "../lib/hooks/useApiClient";
-import { LinkFormValues } from "../lib/types";
 import { aliasValidator } from "../lib/field-validators";
+import { FormValidationContext } from "../context/FormValidationContext";
 
 type LinkFormProps = {
   onSubmit: () => void;
@@ -18,10 +18,6 @@ const LinkForm: FC<LinkFormProps> = ({ onSubmit, setLittleLinkId }) => {
   const [apiResponseErrorText, setApiResponseErrorText] = useState<
     string | null
   >(null);
-  const [formValues, setFormValues] = useState<LinkFormValues>({
-    url: "",
-    alias: "",
-  });
 
   const { authContext } = useAuthContext();
   const apiClient = useApiClient();
@@ -52,39 +48,31 @@ const LinkForm: FC<LinkFormProps> = ({ onSubmit, setLittleLinkId }) => {
     authContext.isUserLoggedIn ? "optional" : "for logged in users"
   })`;
 
-  const fieldOnChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setFormValues({ ...formValues, [e.target.name]: e.target.value });
-  };
-
   const onFormErrorClose = () => {
     setApiResponseErrorText("");
   };
 
   return (
-    <Form
-      title="Create your little link"
-      onSubmit={createLittleLink}
-      buttonText="Create little link"
-    >
-      {isValidationError && (
-        <FormError onClose={onFormErrorClose}>{apiResponseErrorText}</FormError>
-      )}
-      <FormField
-        type="url"
-        label="url"
-        name="url"
-        required={true}
-        formValues={formValues}
-        onChange={fieldOnChange}
-      />
-      <FormField
-        label={aliasLabel}
-        name="alias"
-        formValues={formValues}
-        onChange={fieldOnChange}
-        validator={withFormErrorSetter(aliasValidator, setIsValidationError)}
-      />
-    </Form>
+    <FormValidationContext.Provider value={setIsValidationError}>
+      <Form
+        title="Create your little link"
+        onSubmit={createLittleLink}
+        buttonText="Create little link"
+      >
+        {apiResponseErrorText && (
+          <FormError onClose={onFormErrorClose}>
+            {apiResponseErrorText}
+          </FormError>
+        )}
+        <FormField type="url" label="url" name="url" required />
+        <FormField
+          label={aliasLabel}
+          name="alias"
+          validator={aliasValidator}
+          disabled={!authContext.isUserLoggedIn}
+        />
+      </Form>
+    </FormValidationContext.Provider>
   );
 };
 

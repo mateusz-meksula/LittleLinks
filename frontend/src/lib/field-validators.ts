@@ -1,9 +1,7 @@
-import { formFieldValidator, LinkFormValues, SignUpFormValues } from "./types";
+import { formFieldValidator } from "./types";
 import { isPasswordSecure } from "./utils";
 
-export const usernameValidator: formFieldValidator<SignUpFormValues> = (
-  username
-) => {
+export const usernameValidator: formFieldValidator = (username) => {
   if (!username) {
     return null;
   }
@@ -16,9 +14,7 @@ export const usernameValidator: formFieldValidator<SignUpFormValues> = (
   return null;
 };
 
-export const passwordValidator: formFieldValidator<SignUpFormValues> = (
-  password
-) => {
+export const passwordValidator: formFieldValidator = (password) => {
   if (!password || isPasswordSecure(password)) {
     return null;
   }
@@ -28,11 +24,10 @@ export const passwordValidator: formFieldValidator<SignUpFormValues> = (
   return null;
 };
 
-export const repeatPasswordValidator: formFieldValidator<SignUpFormValues> = (
+export const repeatPasswordValidator: formFieldValidator = (
   repeatPassword,
-  formValues
+  password
 ) => {
-  const password = formValues?.password;
   if ((!password && !repeatPassword) || password === repeatPassword) {
     return null;
   }
@@ -42,7 +37,7 @@ export const repeatPasswordValidator: formFieldValidator<SignUpFormValues> = (
   return null;
 };
 
-export const aliasValidator: formFieldValidator<LinkFormValues> = (alias) => {
+export const aliasValidator: formFieldValidator = (alias) => {
   if (alias.length > 10) {
     return "alias to long";
   }

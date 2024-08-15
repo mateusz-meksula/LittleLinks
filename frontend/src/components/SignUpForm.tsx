@@ -1,25 +1,22 @@
-import { ChangeEvent, FC, FormEvent, useState } from "react";
+import { FC, FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useNotifier } from "../context/NotifierContext";
-import { formDataToObj, withFormErrorSetter } from "../lib/utils";
+import { formDataToObj } from "../lib/utils";
 import { Form, FormError, FormField } from "./Form";
 import {
   passwordValidator,
   repeatPasswordValidator,
   usernameValidator,
 } from "../lib/field-validators";
-import { SignUpFormValues } from "../lib/types";
+import { FormValidationContext } from "../context/FormValidationContext";
 
 const SignUpForm: FC = () => {
   const [isValidationError, setIsValidationError] = useState(false);
   const [apiResponseErrorText, setApiResponseErrorText] = useState<
     string | null
   >(null);
-  const [formValues, setFormValues] = useState<SignUpFormValues>({
-    username: "",
-    password: "",
-    repeatPassword: "",
-  });
+
+  const [passwordDep, passwordDepUpdater] = useState("");
 
   const navigate = useNavigate();
   const notify = useNotifier();
@@ -46,49 +43,42 @@ const SignUpForm: FC = () => {
     }
   }
 
-  const fieldOnChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setFormValues({ ...formValues, [e.target.name]: e.target.value });
-  };
-
   const onFormErrorClose = () => {
     setApiResponseErrorText("");
   };
 
   return (
-    <Form title="Sign up" onSubmit={handleSubmit} buttonText="Sign up">
-      {apiResponseErrorText && (
-        <FormError onClose={onFormErrorClose}>{apiResponseErrorText}</FormError>
-      )}
-      <FormField
-        name="username"
-        required
-        label="username"
-        formValues={formValues}
-        onChange={fieldOnChange}
-        validator={withFormErrorSetter(usernameValidator, setIsValidationError)}
-      />
-      <FormField
-        name="password"
-        required
-        label="password"
-        type="password"
-        formValues={formValues}
-        onChange={fieldOnChange}
-        validator={withFormErrorSetter(passwordValidator, setIsValidationError)}
-      />
-      <FormField
-        name="repeatPassword"
-        required
-        label="repeat password"
-        type="password"
-        onChange={fieldOnChange}
-        formValues={formValues}
-        validator={withFormErrorSetter(
-          repeatPasswordValidator,
-          setIsValidationError
+    <FormValidationContext.Provider value={setIsValidationError}>
+      <Form title="Sign up" onSubmit={handleSubmit} buttonText="Sign up">
+        {apiResponseErrorText && (
+          <FormError onClose={onFormErrorClose}>
+            {apiResponseErrorText}
+          </FormError>
         )}
-      />
-    </Form>
+        <FormField
+          name="username"
+          required
+          label="username"
+          validator={usernameValidator}
+        />
+        <FormField
+          name="password"
+          required
+          label="password"
+          type="password"
+          validator={passwordValidator}
+          dependencyUpdaters={[passwordDepUpdater]}
+        />
+        <FormField
+          name="repeatPassword"
+          required
+          label="repeat password"
+          type="password"
+          validator={repeatPasswordValidator}
+          validationDependencies={[passwordDep]}
+        />
+      </Form>
+    </FormValidationContext.Provider>
   );
 };
 

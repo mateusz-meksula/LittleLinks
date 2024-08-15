@@ -1,24 +1,6 @@
-export type SignUpFormValues = {
-  username: string;
-  password: string;
-  repeatPassword: string;
-};
-
-export type LogInFormValues = {
-  username: string;
-  password: string;
-};
-
-export type LinkFormValues = {
-  url: string;
-  alias: string;
-};
-
-export type FormValuesBase = { [key: string]: string };
-
-export type formFieldValidator<T extends FormValuesBase> = (
+export type formFieldValidator = (
   value: string,
-  formValues?: T
+  ...otherFields: string[]
 ) => string | null;
 
 type InitializedAuthContextValue = {
@@ -44,3 +26,5 @@ export type NotifierType = {
   error: (message: string) => void;
   info: (message: string) => void;
 };
+
+export type FormValidationContextType = (isError: boolean) => void;

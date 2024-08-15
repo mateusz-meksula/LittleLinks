@@ -1,18 +1,13 @@
-import { ChangeEvent, FC, FormEvent, useState } from "react";
+import { FC, FormEvent, useState } from "react";
 import { useAuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useNotifier } from "../context/NotifierContext";
 import { Form, FormError, FormField } from "./Form";
-import { LogInFormValues } from "../lib/types";
 
 const LogInForm: FC = () => {
   const [apiResponseErrorText, setApiResponseErrorText] = useState<
     string | null
   >(null);
-  const [formValues, setFormValues] = useState<LogInFormValues>({
-    username: "",
-    password: "",
-  });
   const { setAuthContext } = useAuthContext();
   const navigate = useNavigate();
   const notify = useNotifier();
@@ -40,10 +35,6 @@ const LogInForm: FC = () => {
     }
   }
 
-  const fieldOnChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setFormValues({ ...formValues, [e.target.name]: e.target.value });
-  };
-
   const onFormErrorClose = () => {
     setApiResponseErrorText("");
   };
@@ -53,21 +44,8 @@ const LogInForm: FC = () => {
       {apiResponseErrorText && (
         <FormError onClose={onFormErrorClose}>{apiResponseErrorText}</FormError>
       )}
-      <FormField
-        name="username"
-        required
-        label="username"
-        formValues={formValues}
-        onChange={fieldOnChange}
-      />
-      <FormField
-        name="password"
-        required
-        label="password"
-        type="password"
-        formValues={formValues}
-        onChange={fieldOnChange}
-      />
+      <FormField name="username" required label="username" />
+      <FormField name="password" required label="password" type="password" />
     </Form>
   );
 };
