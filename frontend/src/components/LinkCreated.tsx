@@ -4,6 +4,7 @@ import { useNotifier } from "../context/NotifierContext";
 import { FormReadOnlyField } from "./Form/FormReadOnlyField";
 import { Button } from "./Utility/Button";
 import { Card } from "./Utility/Card";
+import { copyToClipBoard, getLittleLinkUrl } from "../lib/utils";
 
 type LinkCreatedProps = {
   onAnother: () => void;
@@ -13,9 +14,10 @@ type LinkCreatedProps = {
 
 const LinkCreated: FC<LinkCreatedProps> = ({ onAnother, longUrl, alias }) => {
   const notify = useNotifier();
-  const littleLink = window.location.origin + "/" + alias;
-  const onClick = () => {
-    navigator.clipboard.writeText(littleLink);
+
+  const littleLinkUrl = getLittleLinkUrl(alias);
+  const copyAndNotify = () => {
+    copyToClipBoard(littleLinkUrl);
     notify.success("Link copied!");
   };
   return (
@@ -25,14 +27,14 @@ const LinkCreated: FC<LinkCreatedProps> = ({ onAnother, longUrl, alias }) => {
         <FormReadOnlyField
           label="Little Link"
           name="littleLink"
-          value={littleLink}
+          value={littleLinkUrl}
         />
       </div>
       <div style={{ display: "flex", gap: "1rem" }}>
         <Button>
           <FaShare /> visit
         </Button>
-        <Button onClick={onClick}>
+        <Button onClick={copyAndNotify}>
           <FaCopy /> copy
         </Button>
       </div>
