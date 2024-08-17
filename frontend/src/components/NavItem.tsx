@@ -1,22 +1,20 @@
 import { FC } from "react";
 import { NavLink } from "react-router-dom";
 
-type HeaderButtonProps = {
+type NavItemProps = {
   text: string;
   to?: string;
   onClick?: () => void;
 };
 
-const HeaderButton: FC<HeaderButtonProps> = ({ text, to, onClick }) => {
+export const NavItem: FC<NavItemProps> = ({ text, to, onClick }) => {
   if (to) {
     return <NavLink to={to}>{text}</NavLink>;
   }
 
   return (
-    <div className="header-button" onClick={onClick}>
+    <div className="nav-item" onClick={onClick}>
       {text}
     </div>
   );
 };
-
-export default HeaderButton;

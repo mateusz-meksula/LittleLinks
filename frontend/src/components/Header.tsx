@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import Logo from "./Logo";
 import { useAuthContext } from "../context/AuthContext";
-import HeaderButton from "./HeaderButton";
+import { NavItem } from "./NavItem";
 
 const Header: FC = () => {
   const { authContext, setAuthContext } = useAuthContext();
@@ -23,12 +23,10 @@ const Header: FC = () => {
     <header className="header">
       <Logo />
       <nav>
-        <HeaderButton text="Home" to="/" />
-        {!isUserLoggedIn && <HeaderButton text="Log in" to="/log-in" />}
-        {!isUserLoggedIn && <HeaderButton text="Sign up" to="/sign-up" />}
-        {isUserLoggedIn && (
-          <HeaderButton text="Log out" onClick={handleLogOut} />
-        )}
+        <NavItem text="Home" to="/" />
+        {!isUserLoggedIn && <NavItem text="Log in" to="/log-in" />}
+        {!isUserLoggedIn && <NavItem text="Sign up" to="/sign-up" />}
+        {isUserLoggedIn && <NavItem text="Log out" onClick={handleLogOut} />}
       </nav>
     </header>
   );
