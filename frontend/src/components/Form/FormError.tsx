@@ -1,5 +1,6 @@
 import { FC, PropsWithChildren } from "react";
 import { FaTimes } from "react-icons/fa";
+import { Button } from "../Utility/Button";
 
 type FormErrorProps = {
   onClose: () => void;
@@ -11,10 +12,10 @@ export const FormError: FC<PropsWithChildren<FormErrorProps>> = ({
 }) => {
   return (
     <div className="form-error">
-      <div>{children}</div>
-      <button className="icon-button" onClick={onClose}>
+      {children}
+      <Button onClick={onClose}>
         <FaTimes />
-      </button>
+      </Button>
     </div>
   );
 };

@@ -44,7 +44,7 @@ const CreateLinkPage: FC = () => {
           setFormVisible(true);
         }}
         longUrl={longUrl}
-        littleLink={littleLink}
+        alias={littleLink}
       />
     );
   }

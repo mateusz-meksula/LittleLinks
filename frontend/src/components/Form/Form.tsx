@@ -1,4 +1,6 @@
 import { FC, FormEvent, PropsWithChildren } from "react";
+import { Button } from "../Utility/Button";
+import { Card } from "../Utility/Card";
 
 type FormProps = {
   title: string;
@@ -13,14 +15,14 @@ export const Form: FC<PropsWithChildren<FormProps>> = ({
   buttonText,
 }) => {
   return (
-    <section className="center-page card">
+    <Card>
       <form onSubmit={onSubmit}>
         <p className="form-title">{title}</p>
         {children}
-        <button className="form-button" type="submit">
+        <Button kind="form" type="submit">
           {buttonText}
-        </button>
+        </Button>
       </form>
-    </section>
+    </Card>
   );
 };

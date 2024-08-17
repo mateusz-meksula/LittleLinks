@@ -1,56 +1,45 @@
 import { FC } from "react";
 import { FaShare, FaCopy } from "react-icons/fa";
 import { useNotifier } from "../context/NotifierContext";
+import { FormReadOnlyField } from "./Form/FormReadOnlyField";
+import { Button } from "./Utility/Button";
+import { Card } from "./Utility/Card";
 
 type LinkCreatedProps = {
   onAnother: () => void;
   longUrl: string;
-  littleLink: string;
+  alias: string;
 };
 
-const LinkCreated: FC<LinkCreatedProps> = ({
-  onAnother,
-  longUrl,
-  littleLink,
-}) => {
+const LinkCreated: FC<LinkCreatedProps> = ({ onAnother, longUrl, alias }) => {
   const notify = useNotifier();
+  const littleLink = window.location.origin + "/" + alias;
+  const onClick = () => {
+    navigator.clipboard.writeText(littleLink);
+    notify.success("Link copied!");
+  };
   return (
-    <section className="center-page card">
+    <Card>
       <div>
-        <div className="form-field">
-          <label htmlFor="">Long URL</label>
-          <input type="text" readOnly={true} value={longUrl} />
-        </div>
-        <div className="form-field">
-          <label htmlFor="">Little Link</label>
-          <input
-            type="text"
-            readOnly={true}
-            value={window.location.origin + "/" + littleLink}
-          />
-        </div>
+        <FormReadOnlyField label="Long URL" name="longUrl" value={longUrl} />
+        <FormReadOnlyField
+          label="Little Link"
+          name="littleLink"
+          value={littleLink}
+        />
       </div>
       <div style={{ display: "flex", gap: "1rem" }}>
-        <button className="icon-button">
+        <Button>
           <FaShare /> visit
-        </button>
-        <button
-          className="icon-button"
-          onClick={() => {
-            navigator.clipboard.writeText(
-              window.location.origin + "/" + littleLink
-            );
-            notify.success("Link copied!");
-          }}
-        >
-          <FaCopy />
-          copy
-        </button>
+        </Button>
+        <Button onClick={onClick}>
+          <FaCopy /> copy
+        </Button>
       </div>
-      <button className="form-button" onClick={onAnother}>
+      <Button kind="form" onClick={onAnother}>
         Another
-      </button>
-    </section>
+      </Button>
+    </Card>
   );
 };
 

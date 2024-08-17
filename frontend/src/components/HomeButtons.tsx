@@ -1,6 +1,7 @@
 import { FC } from "react";
 import { Link } from "react-router-dom";
 import { useAuthContext } from "../context/AuthContext";
+import { Button } from "./Utility/Button";
 
 const HomeButtons: FC = () => {
   const { authContext } = useAuthContext();
@@ -8,10 +9,12 @@ const HomeButtons: FC = () => {
   return (
     <section className="center-page">
       <div className="home-buttons">
-        <Link to="/create-link">
-          <button>Create little link</button>
-        </Link>
-        {authContext.isUserLoggedIn && <button>My little links</button>}
+        <Button kind="home">
+          <Link to="/create-link">Create little link</Link>
+        </Button>
+        {authContext.isUserLoggedIn && (
+          <Button kind="home">My little links</Button>
+        )}
       </div>
     </section>
   );
