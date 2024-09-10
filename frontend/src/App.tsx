@@ -9,6 +9,7 @@ import HomePage from "./pages/HomePage";
 import CreateLinkPage from "./pages/CreateLinkPage";
 import LogInPage from "./pages/LogInPage";
 import SignUpPage from "./pages/SignUpPage";
+import LinkRedirectPage from "./pages/LinkRedirectPage";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -17,6 +18,7 @@ const router = createBrowserRouter(
       <Route path="/create-link" element={<CreateLinkPage />} />
       <Route path="/log-in" element={<LogInPage />} />
       <Route path="/sign-up" element={<SignUpPage />} />
+      <Route path="/:alias" element={<LinkRedirectPage />} />
     </Route>
   )
 );

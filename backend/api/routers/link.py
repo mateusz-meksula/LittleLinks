@@ -31,3 +31,11 @@ async def get_link(
     link_id: int,
 ) -> LinkRead:
     return await service.get_link(cursor, link_id, user_id=user and user.id)
+
+
+@router.get("/alias/{alias}")
+async def redirect_by_alias(
+    cursor: Annotated[Cursor, Depends(get_cursor)],
+    alias: str,
+) -> LinkRead:
+    return await service.get_link_by_alias(cursor, alias)

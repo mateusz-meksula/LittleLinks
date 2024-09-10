@@ -74,6 +74,17 @@ async def get_link(
     return LinkRead(**link_data)
 
 
+async def get_link_by_alias(cursor: Cursor, alias: str):
+    stmt = "SELECT * FROM link WHERE alias = %s"
+    await cursor.execute(stmt, (alias,))
+    link_data = await cursor.fetchone()
+
+    if link_data is None:
+        raise LinkNotFoundError
+
+    return LinkRead(**link_data)
+
+
 async def alias_exist(cursor: Cursor, alias: str) -> bool:
     stmt = "SELECT (alias) FROM link WHERE alias = %s"
     await cursor.execute(stmt, (alias,))
