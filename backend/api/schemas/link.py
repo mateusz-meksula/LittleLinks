@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from pydantic import BaseModel
+from pydantic import BaseModel, PositiveInt
 
 
 class LinkCreate(BaseModel):
@@ -20,3 +20,7 @@ class LinkRead(BaseModel):
     visit_count: int
     created: datetime
     modified: datetime | None
+
+
+class LinkSetCount(BaseModel):
+    new_count: PositiveInt

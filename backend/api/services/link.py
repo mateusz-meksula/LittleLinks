@@ -1,7 +1,7 @@
 import random
 import string
 
-from fastapi import HTTPException
+from fastapi import HTTPException, status
 from mysql.connector import IntegrityError
 
 from ..database import Cursor
@@ -11,7 +11,7 @@ from ..schemas.link import LinkCreate, LinkRead
 class LinkNotFoundError(HTTPException):
     def __init__(self) -> None:
         super().__init__(
-            status_code=404,
+            status_code=status.HTTP_404_NOT_FOUND,
             detail="Little Link not found",
         )
 
@@ -19,7 +19,7 @@ class LinkNotFoundError(HTTPException):
 class LinkAliasInNotAuthenticatedRequestError(HTTPException):
     def __init__(self) -> None:
         super().__init__(
-            status_code=403,
+            status_code=status.HTTP_403_FORBIDDEN,
             detail="Alias is only for authenticated users",
         )
 
@@ -27,8 +27,16 @@ class LinkAliasInNotAuthenticatedRequestError(HTTPException):
 class LinkAliasAlreadyTakenError(HTTPException):
     def __init__(self) -> None:
         super().__init__(
-            status_code=409,
-            detail="alias already taken",
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Alias already taken",
+        )
+
+
+class LinkNotModifiedError(HTTPException):
+    def __init__(self) -> None:
+        super().__init__(
+            status_code=status.HTTP_304_NOT_MODIFIED,
+            detail="No links have been modified",
         )
 
 
@@ -83,6 +91,18 @@ async def get_link_by_alias(cursor: Cursor, alias: str):
         raise LinkNotFoundError
 
     return LinkRead(**link_data)
+
+
+async def set_new_count(
+    cursor: Cursor,
+    link_id: int,
+    new_count: int,
+):
+    stmt = "UPDATE link SET visit_count = %s WHERE id = %s"
+    await cursor.execute(stmt, (new_count, link_id))
+    rows_affected = cursor.rowcount
+    if rows_affected == 0:
+        raise LinkNotModifiedError
 
 
 async def alias_exist(cursor: Cursor, alias: str) -> bool:
